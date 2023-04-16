@@ -1,50 +1,87 @@
-<!DOCTYPE html>
 <html>
 <head>
-<title>miniFacebook</title>
-<link rel="stylesheet" href="css/styles.css" type="text/css" media="all" />
+<title>PHP File Upload example</title>
 </head>
-<body>
-<div id="container">
-<header>
-<h1><a href="register.php">Egoriwe Chat</a></h1>
-</header>
+<body style="background-color:cyan;">
+<style>
+p 
+    { 
+        background-color: yellow; 
+        border: 3px solid black; 
+        text-align: center; 
+  
+    }
 
-<ul id="main_menu">
-<li><a href="register.php" title="Register new user">Register</a></li>
-<li><a href="search.php" title="Users list">Search</a></li>
-<li><a href="login.php" title="Login private area">Login</a></li>
-</ul>
+#grad
+    {
+    background-image: linear-gradient(indigo,violet,cyan);
+    text-align: center;  
+    }   
 
-<form method="post" action="register_action.php">
-<fieldset>
-<legend>Register</legend>
-<p>
-<label>Full name: </label> <input type="text" name="name" /> 
-<br>
-<label>Email: </label> <input type="email" name="email" /> 
-<br>
-<label>Password: </label> <input type="password" name="password1" />
-<br>
-<label>Confirm password: </label><input type="password" name="password2" />
-<br>
-<label>Date of birth (yyyy-mm-dd): </label><input type="date" name="date_of_birth" />
-<br>
-<label>Place of birth: </label><input type="text" name="place_of_birth" />
-<br>
-<label>Information: </label><textarea name="info" rows="5" cols="50"></textarea>
-<br>
-<label>Nationality: </label><input type="text" name="nationality" />
-</p>
-<p class="center"><input value="Register" type="submit" /></p>
-</fieldset>
-</form>
+</style>
+<div id = "grad">
+<b>
+<form action="" enctype="multipart/form-data" method="post">
+Select image from dir :
+<input type="file" name="file"><br/><br>
+<input type="submit" value="Upload" name="Submit1"> <br/>
+</b>
+</form><p>
+<?php
+if(isset($_POST['Submit1']))
+{
+    $target_dir = "LAMP LAB/";
+    $target_file = $target_dir . basename($_FILES["file"]["name"]);
+    $uploadOk = 1;
+    $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
 
-<footer>
-<p>Copyright &copy; 2012 Sergio Luján Mora</p>
-<p><a href="mailto:sergio.lujan%20at%20ua.es">Contact</a></p>
-</footer>
+    // Check if image file is a actual image or fake image
+    if(isset($_POST["submit"])) {
+        $check = getimagesize($_FILES["file"]["tmp_name"]);
+        if($check !== false) {
+            echo "File is an image - " . $check["mime"] . ".";
+            $uploadOk = 1;
+        }
+        else {
+            echo "File is not an image.";
+            $uploadOk = 0;
+        }
+    }
+    
+    // Check if file already exists
+    if (file_exists($target_file)) {
+        echo "Sorry, file already exists.";
+        $uploadOk = 0;
+    }
 
-</div>
+    // Allow certain file formats
+    if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+    && $imageFileType != "gif" ) {
+        echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+        $uploadOk = 0;
+    }
+
+    echo $target_file;
+
+    // Check if $uploadOk is set to 0 by an error
+    if ($uploadOk == 0) {
+        echo "Sorry, your file was not uploaded.";
+        // if everything is ok, try to upload file
+    }
+    else {
+        if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)) {
+            echo "The file ". htmlspecialchars( basename( $_FILES["file"]["name"])). " has been uploaded.";
+
+            echo "Content last changed: ".date("F d Y H:i:s.", filemtime($target_file));?></p>
+            <br><br><br><br><b><?php
+            echo "<img src='".$target_file."' width='200'> ";    //display image
+
+        } else {
+            echo "Sorry, there was an error uploading your file.";
+        }
+    }
+
+} 
+?>
 </body>
 </html>
